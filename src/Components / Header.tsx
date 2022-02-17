@@ -3,6 +3,7 @@ import styled from "styled-components";
 import {motion,useAnimation,useViewportScroll} from "framer-motion";
 import { useEffect, useState } from "react";
 
+
 const Nav = styled(motion.nav)`
     display: flex;
     justify-content: space-between;
@@ -12,6 +13,7 @@ const Nav = styled(motion.nav)`
     width: 100%;
     padding: 20px 60px;
     font-size: 14px;
+    color: white;
 `
 const Col = styled.div`
     display: flex;
@@ -95,8 +97,8 @@ const logoVariants = {
 }
 
 const navVariants = {
-    top:{backgroundColor:"rgba(0,0,0,1)"},
-    scroll:{ backgroundColor:"rgba(0,0,0,0)"},
+    top:{backgroundColor:"rgba(0,0,0,0)"},
+    scroll:{ backgroundColor:"rgba(0,0,0,1)"},
 }
 
 
