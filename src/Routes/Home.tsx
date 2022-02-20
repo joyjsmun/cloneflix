@@ -47,19 +47,25 @@ top:-100px;
 `;
 
 const Row = styled(motion.div)`
-    display: grid;
-    grid-template-columns: repeat(6,1fr);
-    position: absolute;
-    width: 100%;
-    gap:5px;
+   display: grid;
+  gap: 5px;
+  grid-template-columns: repeat(6, 1fr);
+  position: absolute;
+  width: 100%;
 `;
 
 const Box = styled(motion.div)<{bgPhoto:string}>`
-    background-color:red;
+    background-color: white;
     background-image: url(${(props) => props.bgPhoto});
     background-size: cover;
     background-position: center center;
     height: 170px;
+    &:first-child{
+       transform-origin: center left;
+    }
+    &:last-child{
+        transform-origin: center right;
+    }
 
    
 
@@ -80,7 +86,21 @@ const rowVariansts = {
 
 const offset = 6;
 
+const boxVariants = {
+    normal:{
+        scale:1,
+    },
+    hover:{
+        scale:1.3,
+        y:-50,
+        transition:{
+            delay:0.5,
+            duration:0.3,
+            type:"tween"
+        }
 
+    }
+}
 
 
 function Home(){
@@ -123,7 +143,11 @@ const toggleLeaving = () => setLeaving((prev) => !prev);
                key={index} >
                   {data?.results.slice(1).slice(offset*index,offset*index+offset).map((movie) => (
                       <Box 
+                      variants={boxVariants}
                       key={movie.id}
+                      initial="normal"
+                      whileHover= "hover"
+                      transition={{type:"tween"}}
                       bgPhoto={makeImagePath(movie.backdrop_path,"w500")}
                       />
                   ))}
