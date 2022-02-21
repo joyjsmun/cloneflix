@@ -8,6 +8,7 @@ import { useState } from "react";
 
 const Wrapper = styled.div`
     background: black;
+    padding-bottom: 200px;
 `
 
 const Loader = styled.div`
@@ -67,8 +68,19 @@ const Box = styled(motion.div)<{bgPhoto:string}>`
         transform-origin: center right;
     }
 
-   
+`
 
+const Info = styled(motion.div)`
+    padding:10px;
+    background-color: ${(props) => props.theme.black.lighter};
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    h4 {
+        text-align: center;
+        font-size: 18px;
+    }
 `
 
 const rowVariansts = {
@@ -91,6 +103,7 @@ const boxVariants = {
         scale:1,
     },
     hover:{
+        zIndex:99,
         scale:1.3,
         y:-50,
         transition:{
@@ -99,6 +112,17 @@ const boxVariants = {
             type:"tween"
         }
 
+    }
+}
+
+const infoVariants = {
+    hover:{
+        opacity:1,
+        transition:{
+            delay:0.5,
+            duration:0.3,
+            type:"tween"
+        }
     }
 }
 
@@ -149,7 +173,11 @@ const toggleLeaving = () => setLeaving((prev) => !prev);
                       whileHover= "hover"
                       transition={{type:"tween"}}
                       bgPhoto={makeImagePath(movie.backdrop_path,"w500")}
-                      />
+                      >
+                          <Info variants={infoVariants}>
+                              <h4>{movie.title}</h4>
+                          </Info>
+                      </Box>
                   ))}
                 </Row>
                </AnimatePresence>
