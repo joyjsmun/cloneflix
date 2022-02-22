@@ -4,6 +4,7 @@ import { getMovies, IGetMoviesResult } from "./api";
 import { makeImagePath } from "./utils";
 import {motion,AnimatePresence} from "framer-motion";
 import { useState } from "react";
+import { useHistory,useRouteMatch} from "react-router-dom";
 
 
 const Wrapper = styled.div`
@@ -67,6 +68,7 @@ const Box = styled(motion.div)<{bgPhoto:string}>`
     &:last-child{
         transform-origin: center right;
     }
+    cursor: pointer;
 
 `
 
@@ -128,6 +130,9 @@ const infoVariants = {
 
 
 function Home(){
+    const history = useHistory();
+    const routeMovieMatch = useRouteMatch<{movieId:string}>("/movies/:movieId");
+    console.log(routeMovieMatch);
     const {data, isLoading} = useQuery<IGetMoviesResult>(
         ["movies","nowPlaying"],
         getMovies
@@ -146,7 +151,9 @@ function Home(){
         }
     }
 const toggleLeaving = () => setLeaving((prev) => !prev);
-
+const onBoxClicked = (movieId:number) => {
+    history.push(`/movies/${movieId}`)
+}
     return <Wrapper>
         {isLoading ? (
             <Loader>Loading..</Loader> 
@@ -167,8 +174,10 @@ const toggleLeaving = () => setLeaving((prev) => !prev);
                key={index} >
                   {data?.results.slice(1).slice(offset*index,offset*index+offset).map((movie) => (
                       <Box 
+                      layoutId={movie.id +""}
                       variants={boxVariants}
                       key={movie.id}
+                      onClick = { () => onBoxClicked(movie.id)}
                       initial="normal"
                       whileHover= "hover"
                       transition={{type:"tween"}}
@@ -181,8 +190,17 @@ const toggleLeaving = () => setLeaving((prev) => !prev);
                   ))}
                 </Row>
                </AnimatePresence>
-               
             </Slider>
+            <AnimatePresence>
+                {routeMovieMatch ? 
+                <motion.div layoutId={routeMovieMatch.params.movieId}
+                style={{
+                position:"absolute", width:"40vw", height:"80vh",backgroundColor:"red",
+                top:50,
+                left:0,
+                right:0,
+                margin:"0 auto"}}/> : null}
+            </AnimatePresence>
                 </>)}
     </Wrapper>;
 }
