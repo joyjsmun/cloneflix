@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getMovies, IGetMoviesResult } from "./api";
 import { makeImagePath } from "./utils";
-import {motion,AnimatePresence} from "framer-motion";
+import {motion,AnimatePresence,useViewportScroll} from "framer-motion";
 import { useState } from "react";
 import { useHistory,useRouteMatch} from "react-router-dom";
 
@@ -97,6 +97,22 @@ const rowVariansts = {
     }
 }
 
+const Overlay = styled(motion.div)`
+    position: fixed;
+    top:0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    opacity: 0;
+`
+const RouteMovie = styled(motion.div)`
+position: absolute;
+width: 40vw;
+height: 80vh;
+left:0;
+right:0;
+margin:0 auto;
+`
 
 const offset = 6;
 
@@ -132,7 +148,7 @@ const infoVariants = {
 function Home(){
     const history = useHistory();
     const routeMovieMatch = useRouteMatch<{movieId:string}>("/movies/:movieId");
-    console.log(routeMovieMatch);
+    const {scrollY} = useViewportScroll();
     const {data, isLoading} = useQuery<IGetMoviesResult>(
         ["movies","nowPlaying"],
         getMovies
@@ -154,6 +170,7 @@ const toggleLeaving = () => setLeaving((prev) => !prev);
 const onBoxClicked = (movieId:number) => {
     history.push(`/movies/${movieId}`)
 }
+const onOverlayClick = () => history.push("/");
     return <Wrapper>
         {isLoading ? (
             <Loader>Loading..</Loader> 
@@ -192,14 +209,13 @@ const onBoxClicked = (movieId:number) => {
                </AnimatePresence>
             </Slider>
             <AnimatePresence>
-                {routeMovieMatch ? 
-                <motion.div layoutId={routeMovieMatch.params.movieId}
-                style={{
-                position:"absolute", width:"40vw", height:"80vh",backgroundColor:"red",
-                top:50,
-                left:0,
-                right:0,
-                margin:"0 auto"}}/> : null}
+                {routeMovieMatch ? (
+                    <>
+                    <Overlay onClick={onOverlayClick} style={{opacity:1}} exit={{opacity:0}}/>
+                <RouteMovie layoutId={routeMovieMatch.params.movieId} style={{top:scrollY.get() + 100}}>
+                </RouteMovie>
+                </>
+                ) : null}
             </AnimatePresence>
                 </>)}
     </Wrapper>;
