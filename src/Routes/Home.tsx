@@ -112,7 +112,36 @@ height: 80vh;
 left:0;
 right:0;
 margin:0 auto;
+border-radius: 15px;
+  overflow: hidden;
+background-color: ${props => props.theme.black.lighter};
 `
+
+const RouteMovieCover = styled.div`
+  width: 100%;
+  background-size: cover;
+  background-position: center center;
+  height: 400px;
+`
+
+const RouteMovieTitle = styled.h2`
+  color: ${(props) => props.theme.white.lighter};
+  padding: 20px;
+  font-size: 46px;
+  position: relative;
+  top: -80px;
+
+`
+
+const RouteMovieOverview = styled.p`
+      padding: 20px;
+  position: relative;
+  top: -80px;
+  color: ${(props) => props.theme.white.lighter};
+`
+
+
+
 
 const offset = 6;
 
@@ -171,6 +200,8 @@ const onBoxClicked = (movieId:number) => {
     history.push(`/movies/${movieId}`)
 }
 const onOverlayClick = () => history.push("/");
+const clickedMovie = routeMovieMatch?.params.movieId && data?.results.find(movie => String(movie.id) === routeMovieMatch.params.movieId)
+    console.log(clickedMovie);
     return <Wrapper>
         {isLoading ? (
             <Loader>Loading..</Loader> 
@@ -213,6 +244,12 @@ const onOverlayClick = () => history.push("/");
                     <>
                     <Overlay onClick={onOverlayClick} style={{opacity:1}} exit={{opacity:0}}/>
                 <RouteMovie layoutId={routeMovieMatch.params.movieId} style={{top:scrollY.get() + 100}}>
+                {clickedMovie && <>
+                <RouteMovieCover style={{
+                    backgroundImage:`linear-gradient(to top,black,transparent),url(${makeImagePath(clickedMovie.backdrop_path,"w500")})`}} />
+                <RouteMovieTitle>{clickedMovie.title}</RouteMovieTitle>
+                <RouteMovieOverview>{clickedMovie.overview}</RouteMovieOverview>
+                </>}
                 </RouteMovie>
                 </>
                 ) : null}
